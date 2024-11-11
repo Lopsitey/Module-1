@@ -29,19 +29,26 @@ string GetKeys(vector<string>& x, int& i, map<string, string>& inventory)//a fun
     }
     return output;
 }
+vector<string> SplitString(vector<string>& keys, int& spot, map<string, string>& inventory) {
+    string s = GetKeys(keys, spot, inventory);
+    vector<string> output;//output vector
+    int position = 0;
+    while (position < s.size()) {//while the position is within the length of the string
+        position = s.find(" ");//the position of the delimiter
+        output.push_back(s.substr(0, position));//extracts from the beginning to the found position (excluding the space) and adds it to the output vector
+        s.erase(0, position + 1); //1 is the length of the delimiter, " ". .erase removes it and all of the string before it
+    }
+    return output;
+}
 
 int main()
 {
     string reply = "";
     bool validInput = true;
     int health = 20;
-    map<string, string> inventory = { { "TRCH","torch"}, {"SWRD", "sword",}, {"BRRS","berries"} };
+    map<string, string> inventory = { { "TRCH","torch"}, {"SWRD", "sword",}, {"BRRS","berries"} };//starting inventory - items the old man has given you
     vector<string> inventoryKeys = {};
     int inventorySpot = 0;
-    //starting inventory - items the old man has given you
-
-    // Iterate over the map and print the keys
-    
 
     cout << "Wow, you're finally awake!" << el;
     sleep(1);
@@ -148,13 +155,24 @@ int main()
         }
         if (reply == "atk") 
         {
-            cout << "You have the items in your inventory: " << GetKeys(inventoryKeys, inventorySpot, inventory) << el;
+            validInput = true;
+            while (validInput) 
+            {
+                clr();
+                cout << "You have the items in your inventory: " << GetKeys(inventoryKeys, inventorySpot, inventory) << el;
+                sleep(0.5);
+                cout << "Which do you choose to use?" << el;
+                cin >> reply;
+                validInput = reply != SplitString(GetKeys(inventoryKeys, inventorySpot, inventory))[0] ? true : false;
+            }
         }
         else 
         {
+            clr();
             cout << "You attempt to run past but the slime splashes you with sticky black acid as you do so." << el;
             cout << "Health -3" << el;
             cout << "Your Health is now: " << health - 3 << el;
+            sleep(10);
         }
     }
     else 
@@ -173,7 +191,7 @@ int main()
         if (reply == "y") 
         {
             clr();
-            cout << "The fountain snaps crackes and pops. It does not go down easily but you feel strangely rejuvinated afterwards." << el;
+            cout << "The fountain snaps cracks and pops. It does not go down easily but you feel strangely rejuvenated afterwards." << el;
             cout << "Health +5" << el;
             cout << "Your Health is now: " << health + 5 << el;
             sleep(10);
@@ -185,4 +203,7 @@ int main()
             sleep(5);
         }
     }
+    clr();
+    cout << "There seems to be a shape in the distance." << el;
+
 }
