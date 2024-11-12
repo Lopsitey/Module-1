@@ -7,30 +7,40 @@
 #define sleep(x) Sleep(x*1000)//a sleep function macro with a parameter that takes an integer for seconds to delay the program by
 #define clr() system("cls")
 #define el endl
+#define GetInventoryValues() GetInventory(inventoryKeys, inventoryValues, inventoryKeySpot, inventoryValueSpot, inventory, values)
+#define GetInventoryKeys() GetInventory(inventoryKeys, inventoryValues, inventoryKeySpot, inventoryValueSpot, inventory, keys)
 using namespace std;
 
-string GetKeys(vector<string>& x, int& i, map<string, string>& inventory)//a function that adds the keys of the inventory map to a vector
+string GetInventory(vector<string>& keysVect, vector<string>& valuesVect, int& i, int& k, map<string, string>& inventory, const bool& keysOrValues)//a function that adds the keys of the inventory map to a vector
 {
     bool started = false;
     int j = 0;
     string output = "";
+    vector<string> temp = {};
     for (const auto& pair : inventory)
     {
-        if (j != i && !started) 
-        {
+        if (keysOrValues && j != i && !started || !keysOrValues && j != k && !started)//basically saying if i'm trying to use keys then iterate through the inventory until it reaches the saved spot
+        {//the or checks if we're using values - if so then then j will also be iterated but using a different variable to compare with instead
             ++j;
             continue;
         }
-        x.push_back(pair.first); ++i; 
+        if (keysOrValues)
+        {
+            keysVect.push_back(pair.first); ++i;
+        }
+        else
+        {
+            valuesVect.push_back(pair.second); ++k;
+        }
         started = true;
     }
-    for (const auto& key : x) {
-        output += " " + key;
+    temp = keysOrValues ? keysVect : valuesVect;//changes the vector used if the output is going to be keys or values
+    for (const auto& element : temp) {
+        output += " " + element;
     }
     return output;
 }
-vector<string> SplitString(vector<string>& keys, int& spot, map<string, string>& inventory) {
-    string s = GetKeys(keys, spot, inventory);
+vector<string> SplitString(string s) {
     vector<string> output;//output vector
     int position = 0;
     while (position < s.size()) {//while the position is within the length of the string
@@ -48,7 +58,15 @@ int main()
     int health = 20;
     map<string, string> inventory = { { "TRCH","torch"}, {"SWRD", "sword",}, {"BRRS","berries"} };//starting inventory - items the old man has given you
     vector<string> inventoryKeys = {};
-    int inventorySpot = 0;
+    vector<string> inventoryValues = {};
+    int inventoryKeySpot = 0;
+    int inventoryValueSpot = 0;
+    const bool keys = true;
+    const bool values = false;
+    //starting inventory - items the old man has given you
+
+    // Iterate over the map and print the keys
+    
 
     cout << "Wow, you're finally awake!" << el;
     sleep(1);
@@ -136,7 +154,7 @@ int main()
         cin >> reply;
         validInput = reply != "l" && reply != "r" ? true : false;
     }
-    if (reply == "l") 
+    if (reply == "l")
     {
         clr();
         cout << "Is that a creature in the darkness?" << el;
@@ -153,17 +171,27 @@ int main()
             cin >> reply;
             validInput = reply != "atk" && reply != "run" ? true : false;
         }
-        if (reply == "atk") 
+        if (reply == "atk")
         {
             validInput = true;
-            while (validInput) 
+            while (validInput)
             {
                 clr();
-                cout << "You have the items in your inventory: " << GetKeys(inventoryKeys, inventorySpot, inventory) << el;
+                cout << "You have the items in your inventory: " << GetInventoryValues() << el;
                 sleep(0.5);
-                cout << "Which do you choose to use?" << el;
+                cout << "Which do you want to use?" << el;
                 cin >> reply;
-                validInput = reply != SplitString(GetKeys(inventoryKeys, inventorySpot, inventory))[0] ? true : false;
+                for (string item : SplitString(GetInventoryKeys())) {
+                    if (reply == item) 
+                    {
+                        validInput = false;
+                        break;//stops the loop if the user inputted an available item
+                    }
+                    else 
+                    {
+                        validInput = true;//continues the loop so the user will be asked again
+                    }
+                }
             }
         }
         else 
