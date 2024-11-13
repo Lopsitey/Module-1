@@ -60,83 +60,144 @@ string GetInventory(vector<string>& keysVect, vector<string>& valuesVect, vector
     }
     return output;
 }
-class sword
+class Sword
 {
-    int damage = 0;
+    public:
+        int damage = 0;
     
-    sword() 
-    {
-        static bool seeded = false;//ensures that the random number is only seeded once to maintain randomness
-        if (!seeded) {
-            srand(time(0));
-            seeded = true;
-        }
-
-        float critChance = rand() % 100 + 1;//generates a random crit chance for this instance
-        float hitChance = rand() % 100 + 1;
-
-        if (hitChance <= 80)//80% chance
+        Sword() 
         {
-            damage = 6;
-
-            if (critChance <= 10)//10% chance
-            {
-                damage *= 2;
+            static bool seeded = false;//ensures that the random number is only seeded once to maintain randomness
+            if (!seeded) {
+                srand(time(0));
+                seeded = true;
             }
-        }
-        //total opportunity for a max of 12 damage if you get a crit
+
+            float critChance = rand() % 100 + 1;//generates a random crit chance for this instance
+            float hitChance = rand() % 100 + 1;
+
+            if (hitChance <= 80)//80% chance
+            {
+                damage = 6;
+
+                if (critChance <= 10)//10% chance
+                {
+                    damage *= 2;
+                }
+            }
+            //total opportunity for a max of 12 damage if you get a crit
     }
 };
-class torch 
+class Torch 
 {
-    int damage = 0;
+    public:
+        int damage = 0;
 
-    torch()//parameters here would be used to input into the entire class but we don't want any inputs, just default values so it's left blank
-    {
-        static bool seeded = false;
-        if (!seeded) {
-            srand(time(0));
-            seeded = true;
-        }
-
-        float fireChance = rand() % 100 + 1;//generates a random fire chance for this instance
-        float critChance = rand() % 100 + 1;
-        float hitChance = rand() % 100 + 1;
-
-        if (hitChance <= 80)//80% chance
+        Torch()//parameters here would be used to input into the entire class but we don't want any inputs, just default values so it's left blank
         {
-            damage = 1;
+            static bool seeded = false;
+            if (!seeded) {
+                srand(time(0));
+                seeded = true;
+            }
 
-            if (fireChance <= 60)//60% chance
+            float fireChance = rand() % 100 + 1;//generates a random fire chance for this instance
+            float critChance = rand() % 100 + 1;
+            float hitChance = rand() % 100 + 1;
+
+            if (hitChance <= 80)//80% chance
             {
-                damage += 3;
+                damage = 1;
+
+                if (fireChance <= 60)//60% chance
+                {
+                    damage += 3;
+                }
+                if (critChance <= 10)//10% chance
+                {
+                    damage *= 2;
+                }
             }
-            if (critChance <= 10)//10% chance
-            {
-                damage *= 2;
-            }
-        }
-        //total opportunity for a max of 8 damage if you get a crit and fire damage
+            //total opportunity for a max of 8 damage if you get a crit and fire damage
     }
 };
-class berries 
+class Berries 
 {
-    int quantity = 3;
-    int healing = 5;
-    berries(bool consumed) 
-    {
-        if (consumed) 
+    public:
+        int healing = 5;//healing would need to be accessed but quantity can be sorted out internally
+        int quantity = 3;//for setting the main berriesQuantity variable after a berry has been consumed
+        Berries(bool consumed, int quantity) 
         {
-            quantity -= 1;//this would always have to be the same instance which gets used unless another punnet is found
+            if (consumed && quantity > 0)
+            {
+                quantity -= 1;//this would always have to be the same instance which gets used unless another punnet is found
+            }
+            else 
+            {
+                healing = quantity == 0 ? 0 : 5;//Only provides healing if there are berries to be healed with
+            }//Double checks that quantity is zero just in case false is accidentally input
+            this->quantity = quantity;//saves the quantity from the constructor back to the class variable
         }
-    }
 };
+class BlackSlime 
+{
+    public:
+        int health = 20;//takes 2 or 4 sword hits
+        int damage = 0;
+        bool alive = true;//alive by default
 
+        BlackSlime(int health) 
+        {
+            this->health = health;
+            static bool seeded = false;
+            if (!seeded) {
+                srand(time(0));
+                seeded = true;
+            }
+
+            float critChance = rand() % 100 + 1;
+            float hitChance = rand() % 100 + 1;
+
+            if (hitChance <= 40)//40% chance
+            {
+                damage = 5;//can kill you in 4 consecutive hits
+
+                if (critChance <= 5)//10% chance (could kill you in 2 hits)
+                {
+                    damage *= 2;
+                }
+            }
+
+            if (health <= 0) 
+            {
+                alive = false;//the slime dies on 0 health
+            }
+            //total opportunity for a max of 8 damage if you get a crit and fire damage
+        }
+};
+class Player
+{
+    private:
+        int health = 20;///health would always be vicariously accessed through the variable defined in main
+    //this variable would be updated whenever the player instance is re-initialised
+    public:
+        const int maxHealth = 20;
+        bool alive = true;
+        Player(int health)
+        {
+            if (health <= 0) 
+            {
+                alive = false;//directly assigning the class variable a value so I don't need to use this->alive = alive since it is implicit in this scenario
+            }
+            this->health = health;
+        }
+};
 int main()
 {
     string reply = "";
     bool validInput = true;
-    int health = 20;
+    int health = 20;//rather than directly accessing the health variable in the player class this can be input as a parameter which makes the class more secure
+    int enemyHealth;//same concept but for enemies
     vector<string> inventory = { "torch TRCH ", "sword SWRD ", "berries BRRS " };//starting inventory - items the old man has given you
     vector<string> inventoryKeys = {};//the inventory has a space after each set of items so the split string works properly
     vector<string> inventoryValues = {};
@@ -147,176 +208,227 @@ int main()
     const int keys = 0;
     const int values = 1;
     const int both = 2;
-    //starting inventory - items the old man has given you
+    int berriesQuantity = 3;
+    Player player(health);
 
-    // Iterate over the map and print the keys
-    
-
-    cout << "Wow, you're finally awake!" << el;
-    sleep(1);
-    cout << "." << el;
-    sleep(1.5);
-    cout << ".." << el;
-    sleep(1.8);
-    cout << "..." << el;
-    sleep(2.18);
-    while (validInput) 
+    while (player.alive)//the game ends if you die
     {
-        clr();
-        cout << "Adventurer, is that really you?" << el; 
-        sleep(0.5);
-        cout << "(y/n)" << el;
-        cin >> reply;
-        validInput = reply != "y" && reply != "n" ? true : false;//if the input is valid then the validInput variable will be false
-    }//doing this will break the loop and continue the program
-    if (reply == "y") 
-    {
-        clr();
-        cout << "Good, I was hoping I could get someone to clear up this mess for me." << el;
-    }
-    else 
-    {
-        clr();
-        cout << "Don't lie to me adventurer..." << el;
-        sleep(3);
-        cout << "My powers are beyond your comprehension!" << el;
-        sleep(3);
-        clr();
-        cout << "Haha, gotcha, I actually know it's you because of your iconic lower back tattoo." << el;
-        sleep(5);
-        clr();
-        cout << "I'm glad you're here, I was hoping I could get someone to clear up this mess for me." << el;
-    }
-    sleep(5);
-    clr();
-    cout << "You see, this dungeon has been in my family for generations." << el;
-    cout << "Back in the day, when I was just a little whippersnapper our family ruled this land like kings." << el;
-    sleep(10);
-    clr();
-    cout << "We became so wealthy we needed a dungeon to store all of our gold..." << el;
-    sleep(5);
-    clr();
-    cout << "However, in recent times the dungeon has become infested with these terrible creatures." << el;
-    cout << "Come to think of it, this may have happened due to those toxic potion barrels we dumped down there a few years ago..." << el;
-    sleep(10);
-    validInput = true;
-    while (validInput) 
-    {
-        clr();
-        cout << "So waddya say, adventurer, think you're up to the task to help me clear these pesky creatures out?" << el;
-        sleep(0.5);
-        cout << "(y/n)" << el;
-        cin >> reply;
-        validInput = reply != "y" && reply != "n" ? true : false;
-    }
-    if (reply == "y")
-    {
-        clr();
-        cout << "Brilliant, since I'm feeling extra generous today, as payment you can keep anything you find!" << el;
-        sleep(5);
-    }
-    else 
-    {
-        clr();
-        cout << "Well then, I think you should just leave!" << el;
-        return 0;
-    }
-    clr();
-    cout << "You gradually enter the dungeon feeling colder the further you go..." << el;
-    sleep(5);
-    cout << "Fumbling for the old man's torch you manage to strike it alight with your trusty flint." << el;
-    sleep(5);
-    cout << "Light hasn't touched this place in a long time." << el;
-    sleep(3.5);
-    validInput = true;
-    while (validInput) 
-    {
-        clr();//cout << "You feel a slightly uneasy - the air is dry and you can hear each breath echo off the walls." << el;
-        cout << "You meet a fork in the dungeon, do you go left or right?" << el;
-        sleep(0.5);
-        cout << "(l/r)" << el;
-        cin >> reply;
-        validInput = reply != "l" && reply != "r" ? true : false;
-    }
-    if (reply == "l")
-    {
-        clr();
-        cout << "Is that a creature in the darkness?" << el;
-        sleep(3);
-        cout << "As you get closer it appears to be a large black slime." << el;
-        sleep(3);
-        validInput = true;
+        cout << "Wow, you're finally awake!" << el;
+        sleep(1);
+        cout << "." << el;
+        sleep(1.5);
+        cout << ".." << el;
+        sleep(1.8);
+        cout << "..." << el;
+        sleep(2.18);
         while (validInput)
         {
             clr();
-            cout << "Do you want to attack it or attempt to run past?" << el;
+            cout << "Adventurer, is that really you?" << el;
             sleep(0.5);
-            cout << "(atk/run)" << el;
+            cout << "(y/n)" << el;
             cin >> reply;
-            validInput = reply != "atk" && reply != "run" ? true : false;
-        }
-        if (reply == "atk")
-        {
-            validInput = true;
-            while (validInput)
-            {
-                clr();
-                cout << "You have the items in your inventory: " << GetInventoryWhole() << el;
-                sleep(0.5);
-                cout << "Which do you want to use?" << el;
-                cin >> reply;
-                for (string item : SplitString(GetInventoryValues())) {
-                    if (reply == item) 
-                    {
-                        validInput = false;
-                        break;//stops the loop if the user inputted an available item
-                    }
-                    else 
-                    {
-                        validInput = true;//continues the loop so the user will be asked again
-                    }
-                }
-            }
-
-        }
-        else 
+            validInput = reply != "y" && reply != "n" ? true : false;//if the input is valid then the validInput variable will be false
+        }//doing this will break the loop and continue the program
+        if (reply == "y")
         {
             clr();
-            cout << "You attempt to run past but the slime splashes you with sticky black acid as you do so." << el;
-            cout << "Health -3" << el;
-            cout << "Your Health is now: " << health - 3 << el;
-            sleep(10);
+            cout << "Good, I was hoping I could get someone to clear up this mess for me." << el;
         }
-    }
-    else 
-    {
+        else
+        {
+            clr();
+            cout << "Don't lie to me adventurer..." << el;
+            sleep(3);
+            cout << "My powers are beyond your comprehension!" << el;
+            sleep(3);
+            clr();
+            cout << "Haha, gotcha, I actually know it's you because of your iconic lower back tattoo." << el;
+            sleep(5);
+            clr();
+            cout << "I'm glad you're here, I was hoping I could get someone to clear up this mess for me." << el;
+        }
+        sleep(5);
+        clr();
+        cout << "You see, this dungeon has been in my family for generations." << el;
+        cout << "Back in the day, when I was just a little whippersnapper our family ruled this land like kings." << el;
+        sleep(10);
+        clr();
+        cout << "We became so wealthy we needed a dungeon to store all of our gold..." << el;
+        sleep(5);
+        clr();
+        cout << "However, in recent times the dungeon has become infested with these terrible creatures." << el;
+        cout << "Come to think of it, this may have happened due to those toxic potion barrels we dumped down there a few years ago..." << el;
+        sleep(10);
         validInput = true;
         while (validInput)
         {
             clr();
-            cout << "There seems to be a large fountain in the room's center." << el;
-            cout << "Do you drink from it?" << el;
+            cout << "So waddya say, adventurer, think you're up to the task to help me clear these pesky creatures out?" << el;
             sleep(0.5);
             cout << "(y/n)" << el;
             cin >> reply;
             validInput = reply != "y" && reply != "n" ? true : false;
         }
-        if (reply == "y") 
+        if (reply == "y")
         {
             clr();
-            cout << "The fountain snaps cracks and pops. It does not go down easily but you feel strangely rejuvenated afterwards." << el;
-            cout << "Health +5" << el;
-            cout << "Your Health is now: " << health + 5 << el;
-            sleep(10);
+            cout << "Brilliant, since I'm feeling extra generous today, as payment you can keep anything you find!" << el;
+            sleep(5);
         }
         else
         {
             clr();
-            cout << "You walk past the fountain. As you leave the room you give it one last look, pondering what may have been..." << el;
-            sleep(5);
+            cout << "Well then, I think you should just leave!" << el;
+            return 0;
+        }
+        clr();
+        cout << "You gradually enter the dungeon feeling colder the further you go..." << el;
+        sleep(5);
+        cout << "Fumbling for the old man's torch you manage to strike it alight with your trusty flint." << el;
+        sleep(5);
+        cout << "Light hasn't touched this place in a long time." << el;
+        sleep(3.5);
+        validInput = true;
+        while (validInput)
+        {
+            clr();//cout << "You feel a slightly uneasy - the air is dry and you can hear each breath echo off the walls." << el;
+            cout << "You meet a fork in the dungeon, do you go left or right?" << el;
+            sleep(0.5);
+            cout << "(l/r)" << el;
+            cin >> reply;
+            validInput = reply != "l" && reply != "r" ? true : false;
+        }
+        if (reply == "l")
+        {
+            clr();
+            cout << "Is that a creature in the darkness?" << el;
+            sleep(3);
+            cout << "As you get closer it appears to be a large black slime." << el;
+            sleep(3);
+            validInput = true;
+            while (validInput)
+            {
+                clr();
+                cout << "Do you want to attack it or attempt to run past?" << el;
+                sleep(0.5);
+                cout << "(atk/run)" << el;
+                cin >> reply;
+                validInput = reply != "atk" && reply != "run" ? true : false;
+            }
+            if (reply == "atk")
+            {
+                enemyHealth = 20;
+                BlackSlime blackSlime(enemyHealth);
+                while (blackSlime.alive)//while the slime is alive
+                {
+                    BlackSlime blackSlime(enemyHealth);
+                    Player player(health);//re-initialises the class to check if we're still alive
+                    validInput = true;
+                    while (validInput)
+                    {
+                        clr();
+                        cout << "You have the items in your inventory: " << GetInventoryWhole() << el;
+                        sleep(0.5);
+                        cout << "Which do you want to use?" << el;
+                        cin >> reply;
+
+                        if (reply == "TRCH")
+                        {
+                            Torch torch;//re-initialises the class on very torch call so the number is always random
+                            clr();
+                            cout << "You attempt to attack the slime with your fiery torch!" << el;
+                            cout << "The slime had " << blackSlime.health << " health but now has ";//doesn't have an el; because it continues below
+                            blackSlime.health -= torch.damage;//has to be on a separate line,
+                            cout << blackSlime.health << " health!" << el;
+                        }
+                        else if (reply == "SWRD")
+                        {
+                            Sword sword;
+                            clr();
+                            cout << "You attempt to attack the slime with your steely sword!" << el;
+                            cout << "The slime had " << blackSlime.health << " health but now has ";
+                            blackSlime.health -= sword.damage;
+                            cout << blackSlime.health << " health!" << el;
+                        }
+                        else if (reply == "BRRS")
+                        {
+                            Berries berries(true, berriesQuantity);
+                            berriesQuantity = berries.quantity;//stores the quantity for future use in other instances
+                            clr();
+                            cout << "You attempt to heal for " << berries.healing <<" health!" << el;
+                            cout << "Your health was " << health << " and is now ";
+                            health += health < 20 ? berries.healing : 0;//ensures that you aren't healing over your max health
+                            cout << health << "!" << el;
+                        }
+                        else
+                        {
+                            validInput = true;
+                        }
+                        validInput = false;
+                    }
+                    enemyHealth = blackSlime.health;
+                    sleep(10);
+                    cout << "The slime attempts to attack you with it's wet tendrils!" << el;
+                    cout << "You had " << health << " but now have ";
+                    health -= blackSlime.damage;
+                    cout << health << "!" << el;
+                }
+            }
+            else
+            {
+                clr();
+                cout << "You attempt to run past but the slime splashes you with sticky black acid as you do so." << el;
+                cout << "Health -3" << el;
+                cout << "Your Health is now: " << health - 3 << el;
+                sleep(10);
+            }
+        }
+        else
+        {
+            validInput = true;
+            while (validInput)
+            {
+                clr();
+                cout << "There seems to be a large fountain in the room's center." << el;
+                cout << "Do you drink from it?" << el;
+                sleep(0.5);
+                cout << "(y/n)" << el;
+                cin >> reply;
+                validInput = reply != "y" && reply != "n" ? true : false;
+            }
+            if (reply == "y")
+            {
+                clr();
+                cout << "The fountain snaps cracks and pops. It does not go down easily but you feel strangely rejuvenated afterwards." << el;
+                cout << "Health +5" << el;
+                cout << "Your Health is now: " << health + 5 << el;
+                sleep(10);
+            }
+            else
+            {
+                clr();
+                cout << "You walk past the fountain. As you leave the room you give it one last look, pondering what may have been..." << el;
+                sleep(5);
+            }
+        }
+        clr();
+        cout << "There seems to be a shape in the distance." << el;
+    }
+    cout << "You died!" << el;
+    exit;
+}
+/*
+    For checking if the input is in the inventory and valid:
+    for (string item : SplitString(GetInventoryValues())) {
+        if (reply == item)
+        {
+            validInput = false;
+            break;//stops the loop if the user inputted an available item
+        }
+        else
+        {
+            validInput = true;//continues the loop so the user will be asked again
         }
     }
-    clr();
-    cout << "There seems to be a shape in the distance." << el;
-
-}
+*/
