@@ -3,66 +3,150 @@
 #include <map>
 #include <vector>
 #include <windows.h>
+#include <ctime>
+#include<time.h>
 #include "Text-Based Adventure Game.h"
 #define sleep(x) Sleep(x*1000)//a sleep function macro with a parameter that takes an integer for seconds to delay the program by
 #define clr() system("cls")
 #define el endl
-#define GetInventoryValues() GetInventory(inventoryKeys, inventoryValues, inventoryKeySpot, inventoryValueSpot, inventory, values)
-#define GetInventoryKeys() GetInventory(inventoryKeys, inventoryValues, inventoryKeySpot, inventoryValueSpot, inventory, keys)
+#define GetInventoryValues() GetInventory(inventoryKeys, inventoryValues, wholeInventory, inventoryKeySpot, inventoryValueSpot, wholeInventorySpot, inventory, values)
+#define GetInventoryKeys() GetInventory(inventoryKeys, inventoryValues, wholeInventory, inventoryKeySpot, inventoryValueSpot, wholeInventorySpot, inventory, keys)
+#define GetInventoryWhole() GetInventory(inventoryKeys, inventoryValues, wholeInventory, inventoryKeySpot, inventoryValueSpot, wholeInventorySpot, inventory, both)
 using namespace std;
 
-string GetInventory(vector<string>& keysVect, vector<string>& valuesVect, int& i, int& k, map<string, string>& inventory, const bool& keysOrValues)//a function that adds the keys of the inventory map to a vector
-{
-    bool started = false;
-    int j = 0;
-    string output = "";
-    vector<string> temp = {};
-    for (const auto& pair : inventory)
-    {
-        if (keysOrValues && j != i && !started || !keysOrValues && j != k && !started)//basically saying if i'm trying to use keys then iterate through the inventory until it reaches the saved spot
-        {//the or checks if we're using values - if so then then j will also be iterated but using a different variable to compare with instead
-            ++j;
-            continue;
-        }
-        if (keysOrValues)
-        {
-            keysVect.push_back(pair.first); ++i;
-        }
-        else
-        {
-            valuesVect.push_back(pair.second); ++k;
-        }
-        started = true;
-    }
-    temp = keysOrValues ? keysVect : valuesVect;//changes the vector used if the output is going to be keys or values
-    for (const auto& element : temp) {
-        output += " " + element;
-    }
-    return output;
-}
 vector<string> SplitString(string s) {
     vector<string> output;//output vector
     int position = 0;
-    while (position < s.size()) {//while the position is within the length of the string
+    while (s.size() > 0) {//while the string hasn't been deleted yet
         position = s.find(" ");//the position of the delimiter
         output.push_back(s.substr(0, position));//extracts from the beginning to the found position (excluding the space) and adds it to the output vector
         s.erase(0, position + 1); //1 is the length of the delimiter, " ". .erase removes it and all of the string before it
     }
     return output;
 }
+string GetInventory(vector<string>& keysVect, vector<string>& valuesVect, vector<string>& wholeInventory, int& i, int& k, int&m, vector<string>& inventory, const int& outputMethod)//a function that adds the keys of the inventory map to a vector
+{
+    bool started = false;
+    int j = 0;
+    string output = "";
+    vector<string> temp = {};
+    string item = "";//stores an element of the vector when split the "keys" or "values"
+    for (const auto& pair : inventory)
+    {
+        if ((outputMethod == 0 && j != i || outputMethod == 1 && j != k || outputMethod == 2 && j != m) && !started)//basically saying if i'm trying to use keys then iterate through the inventory until it reaches the saved spot
+        {//the or checks if we're using values - if so then then j will also be iterated but using a different variable to compare with instead
+            ++j;
+            continue;
+        }
+        if (outputMethod == 0)//selects the first item in the vector "pair" the "keys"
+        {
+            item = SplitString(pair)[0];
+            keysVect.push_back(item); ++i;
+        }
+        else if (outputMethod == 1)//selects the second item in the vector "pair" the "values"
+        {
+            item = SplitString(pair)[1];
+            valuesVect.push_back(item); ++k;
+        }
+        else 
+        {
+            wholeInventory.push_back(pair); ++m;
+        }
+        started = true;
+    }
+    temp = outputMethod == 0 ? keysVect : outputMethod == 1 ? valuesVect : wholeInventory;//changes the vector used if the output is going to be keys or values
+    for (const auto& element : temp) {
+        output += element + " ";//has to be in this order so the string ends with a space which allows the split string function to work
+    }
+    return output;
+}
+class sword
+{
+    int damage = 0;
+    
+    sword() 
+    {
+        static bool seeded = false;//ensures that the random number is only seeded once to maintain randomness
+        if (!seeded) {
+            srand(time(0));
+            seeded = true;
+        }
+
+        float critChance = rand() % 100 + 1;//generates a random crit chance for this instance
+        float hitChance = rand() % 100 + 1;
+
+        if (hitChance <= 80)//80% chance
+        {
+            damage = 6;
+
+            if (critChance <= 10)//10% chance
+            {
+                damage *= 2;
+            }
+        }
+        //total opportunity for a max of 12 damage if you get a crit
+    }
+};
+class torch 
+{
+    int damage = 0;
+
+    torch()//parameters here would be used to input into the entire class but we don't want any inputs, just default values so it's left blank
+    {
+        static bool seeded = false;
+        if (!seeded) {
+            srand(time(0));
+            seeded = true;
+        }
+
+        float fireChance = rand() % 100 + 1;//generates a random fire chance for this instance
+        float critChance = rand() % 100 + 1;
+        float hitChance = rand() % 100 + 1;
+
+        if (hitChance <= 80)//80% chance
+        {
+            damage = 1;
+
+            if (fireChance <= 60)//60% chance
+            {
+                damage += 3;
+            }
+            if (critChance <= 10)//10% chance
+            {
+                damage *= 2;
+            }
+        }
+        //total opportunity for a max of 8 damage if you get a crit and fire damage
+    }
+};
+class berries 
+{
+    int quantity = 3;
+    int healing = 5;
+    berries(bool consumed) 
+    {
+        if (consumed) 
+        {
+            quantity -= 1;//this would always have to be the same instance which gets used unless another punnet is found
+        }
+    }
+};
 
 int main()
 {
     string reply = "";
     bool validInput = true;
     int health = 20;
-    map<string, string> inventory = { { "TRCH","torch"}, {"SWRD", "sword",}, {"BRRS","berries"} };//starting inventory - items the old man has given you
-    vector<string> inventoryKeys = {};
+    vector<string> inventory = { "torch TRCH ", "sword SWRD ", "berries BRRS " };//starting inventory - items the old man has given you
+    vector<string> inventoryKeys = {};//the inventory has a space after each set of items so the split string works properly
     vector<string> inventoryValues = {};
+    vector<string> wholeInventory = {};
     int inventoryKeySpot = 0;
     int inventoryValueSpot = 0;
-    const bool keys = true;
-    const bool values = false;
+    int wholeInventorySpot = 0;
+    const int keys = 0;
+    const int values = 1;
+    const int both = 2;
     //starting inventory - items the old man has given you
 
     // Iterate over the map and print the keys
@@ -79,7 +163,7 @@ int main()
     while (validInput) 
     {
         clr();
-        cout << "Adventurer, is that really you?" << el;
+        cout << "Adventurer, is that really you?" << el; 
         sleep(0.5);
         cout << "(y/n)" << el;
         cin >> reply;
@@ -177,11 +261,11 @@ int main()
             while (validInput)
             {
                 clr();
-                cout << "You have the items in your inventory: " << GetInventoryValues() << el;
+                cout << "You have the items in your inventory: " << GetInventoryWhole() << el;
                 sleep(0.5);
                 cout << "Which do you want to use?" << el;
                 cin >> reply;
-                for (string item : SplitString(GetInventoryKeys())) {
+                for (string item : SplitString(GetInventoryValues())) {
                     if (reply == item) 
                     {
                         validInput = false;
@@ -193,6 +277,7 @@ int main()
                     }
                 }
             }
+
         }
         else 
         {
