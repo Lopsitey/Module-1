@@ -140,11 +140,9 @@ class Berries
         }
 };
 class BlackSlime 
-{
-    private:
-        int health = 20;//takes 2 or 4 sword hits
+{       
     public:
-        int damage = 0;
+        int health = 20;//takes 2 or 4 sword hits
         bool isAlive() 
         {
             if (health > 0)
@@ -153,15 +151,16 @@ class BlackSlime
             }
             else
             {
+                clr();
                 sleep(0.5);
                 cout << "The slime died!" << el;
+                sleep(3);
                 return false;
             }
         }//alive by default but dies on 0 health
 
-        BlackSlime(int health) 
+        int getDamage() 
         {
-            this->health = health;
             static bool seeded = false;
             if (!seeded) {
                 srand(time(0));
@@ -171,6 +170,7 @@ class BlackSlime
             float critChance = rand() % 100 + 1;
             float hitChance = rand() % 100 + 1;
 
+            int damage = 0;//resets damage after prior alterations
             if (hitChance <= 40)//40% chance
             {
                 damage = 5;//can kill you in 4 consecutive hits
@@ -180,15 +180,27 @@ class BlackSlime
                     damage *= 2;
                 }
             }
-            //total opportunity for a max of 8 damage if you get a crit and fire damage
+            return damage;//total opportunity for a max of 8 damage if you get a crit and fire damage
+        }
+        
+        void attackPlayer(Player& player)
+        {
+            if (isAlive())//if the slime is alive it can attack
+            {
+                sleep(8);
+                clr();
+                cout << "The slime attempts to attack you with it's wet tendrils!" << el;
+                cout << "You had " << health << " health but now have ";
+                health -= getDamage();//for the random damage to be recalculated I use a function which returns the damage
+                cout << health << " health!" << el;
+                sleep(8);
+            }
         }
 };
 class Player
 {
-    private:
-        int health = 20;///health would always be vicariously accessed through the variable defined in main
-        //this variable would be updated whenever the player instance is re-initialised
     public:
+        int health = 20;//this variable would be updated whenever the player instance is re-initialised
         const int maxHealth = 20;
         bool isAlive() 
         {
@@ -198,26 +210,27 @@ class Player
             }
             else 
             {
+                clr();
                 sleep(0.5);
                 cout << "You died!" << el;
-                return false;
+                sleep(3);
+                exit(0);//terminates the program
+                return false;//never gets run, just for clarity
             }
         }//alive by default but dies on 0 health
-        Player(int health)
+        /*Player()
         {
-            //if (health <= 0) 
-            //{
-                //alive = false;//directly assigning the class variable a value so I don't need to use this->alive = alive since it is implicit in this scenario
-            //}
+            if (health <= 0) 
+            {
+                alive = false;//directly assigning the class variable a value so I don't need to use this->alive = alive since it is implicit in this scenario
+            }
             this->health = health;
-        }
+        }*/
 };
 int main()
 {
     string reply = "";
     bool validInput = true;
-    int health = 20;//rather than directly accessing the health variable in the player class this can be input as a parameter which makes the class more secure
-    int enemyHealth = 0;//same concept but for enemies
     vector<string> inventory = { "torch TRCH ", "sword SWRD ", "berries BRRS " };//starting inventory - items the old man has given you
     vector<string> inventoryKeys = {};//the inventory has a space after each set of items so the split string works properly
     vector<string> inventoryValues = {};
@@ -335,9 +348,8 @@ int main()
         }
         if (reply == "atk")
         {
-            enemyHealth = 20;
-            BlackSlime blackSlime(enemyHealth);
-            Player player(health);
+            BlackSlime blackSlime;
+            Player player;
             while (blackSlime.isAlive() && player.isAlive())//while you and the slime are alive
             {
                 validInput = true;
@@ -354,28 +366,28 @@ int main()
                         Torch torch;//re-initialises the class on very torch call so the number is always random
                         clr();
                         cout << "You attempt to attack the slime with your fiery torch!" << el;
-                        cout << "The slime had " << enemyHealth << " health but now has ";//doesn't have an el; because it continues below
-                        enemyHealth -= torch.damage;//has to be on a separate line,
-                        cout << enemyHealth << " health!" << el;
+                        cout << "The slime had " << blackSlime.health << " health but now has ";//doesn't have an el; because it continues below
+                        blackSlime.health -= torch.damage;//has to be on a separate line,
+                        cout << blackSlime.health << " health!" << el;
                     }
                     else if (reply == "SWRD")
                     {
                         Sword sword;
                         clr();
                         cout << "You attempt to attack the slime with your steely sword!" << el;
-                        cout << "The slime had " << enemyHealth << " health but now has ";
-                        enemyHealth -= sword.damage;
-                        cout << enemyHealth << " health!" << el;
+                        cout << "The slime had " << blackSlime.health << " health but now has ";
+                        blackSlime.health -= sword.damage;
+                        cout << blackSlime.health << " health!" << el;
                     }
                     else if (reply == "BRRS")
                     {
                         Berries berries(true, berriesQuantity);
                         berriesQuantity = berries.quantity;//stores the quantity for future use in other instances
                         clr();
-                        cout << "You to heal for " << berries.healing << " health!" << el;
-                        cout << "Your health was " << health << " and is now ";
-                        health += health < 20 ? berries.healing : 0;//ensures that you aren't healing over your max health
-                        cout << health << "!" << el;
+                        cout << "You heal for " << berries.healing << " health!" << el;
+                        cout << "Your health was " << player.health << " and is now ";
+                        player.health += player.health < 20 ? berries.healing : 0;//ensures that you aren't healing over your max health
+                        cout << player.health << "!" << el;
                     }
                     else
                     {
@@ -384,21 +396,17 @@ int main()
                     }
                     validInput = false;
                 }
-                sleep(8);
-                clr();
-                cout << "The slime attempts to attack you with it's wet tendrils!" << el;
-                cout << "You had " << health << " health but now have ";
-                health -= blackSlime.damage;
-                cout << health << " health!" << el;
-                sleep(8);
+                blackSlime.attackPlayer(player);
             }
         }
         else
         {
+            Player player;
             clr();
             cout << "You attempt to run past but the slime splashes you with sticky black acid as you do so." << el;
-            cout << "Health -3" << el;
-            cout << "Your Health is now: " << health - 3 << el;
+            cout << "Your health was " << player.health;
+            player.health -= 3;
+            cout << " and is now: " << player.health - 3 << el;
             sleep(10);
         }
     }
@@ -417,10 +425,11 @@ int main()
         }
         if (reply == "y")
         {
+            Player player;
             clr();
             cout << "The fountain snaps cracks and pops. It does not go down easily but you feel strangely rejuvenated afterwards." << el;
             cout << "Health +5" << el;
-            cout << "Your Health is now: " << health + 5 << el;
+            cout << "Your Health is now: " << player.health + 5 << el;
             sleep(10);
         }
         else
