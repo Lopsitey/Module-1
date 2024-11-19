@@ -24,7 +24,7 @@ vector<string> SplitString(string s) {
     }
     return output;
 }
-string GetInventory(vector<string>& keysVect, vector<string>& valuesVect, vector<string>& wholeInventory, int& i, int& k, int&m, vector<string>& inventory, const int& outputMethod)//a function that adds the keys of the inventory map to a vector
+string GetInventory(vector<string>& keysVect, vector<string>& valuesVect, vector<string>& wholeInventory, int& i, int& k, int& m, vector<string>& inventory, const int& outputMethod)//a function that adds the keys of the inventory map to a vector
 {
     bool started = false;
     int j = 0;
@@ -48,7 +48,7 @@ string GetInventory(vector<string>& keysVect, vector<string>& valuesVect, vector
             item = SplitString(pair)[1];
             valuesVect.push_back(item); ++k;
         }
-        else 
+        else
         {
             wholeInventory.push_back(pair); ++m;
         }
@@ -62,171 +62,172 @@ string GetInventory(vector<string>& keysVect, vector<string>& valuesVect, vector
 }
 class Sword
 {
-    public:
-        int damage = 0;
-    
-        Sword() 
+public:
+    int damage = 0;
+
+    Sword()
+    {
+        static bool seeded = false;//ensures that the random number is only seeded once to maintain randomness
+        if (!seeded) {
+            srand(time(0));
+            seeded = true;
+        }
+
+        float critChance = rand() % 100 + 1;//generates a random crit chance for this instance
+        float hitChance = rand() % 100 + 1;
+
+        if (hitChance <= 80)//80% chance
         {
-            static bool seeded = false;//ensures that the random number is only seeded once to maintain randomness
-            if (!seeded) {
-                srand(time(0));
-                seeded = true;
-            }
+            damage = 6;
 
-            float critChance = rand() % 100 + 1;//generates a random crit chance for this instance
-            float hitChance = rand() % 100 + 1;
-
-            if (hitChance <= 80)//80% chance
+            if (critChance <= 10)//10% chance
             {
-                damage = 6;
-
-                if (critChance <= 10)//10% chance
-                {
-                    damage *= 2;
-                }
+                damage *= 2;
             }
-            //total opportunity for a max of 12 damage if you get a crit
+        }
+        //total opportunity for a max of 12 damage if you get a crit
     }
 };
-class Torch 
+class Torch
 {
-    public:
-        int damage = 0;
+public:
+    int damage = 0;
 
-        Torch()//parameters here would be used to input into the entire class but we don't want any inputs, just default values so it's left blank
+    Torch()//parameters here would be used to input into the entire class but we don't want any inputs, just default values so it's left blank
+    {
+        static bool seeded = false;
+        if (!seeded) {
+            srand(time(0));
+            seeded = true;
+        }
+
+        float fireChance = rand() % 100 + 1;//generates a random fire chance for this instance
+        float critChance = rand() % 100 + 1;
+        float hitChance = rand() % 100 + 1;
+
+        if (hitChance <= 80)//80% chance
         {
-            static bool seeded = false;
-            if (!seeded) {
-                srand(time(0));
-                seeded = true;
-            }
+            damage = 1;
 
-            float fireChance = rand() % 100 + 1;//generates a random fire chance for this instance
-            float critChance = rand() % 100 + 1;
-            float hitChance = rand() % 100 + 1;
-
-            if (hitChance <= 80)//80% chance
+            if (fireChance <= 60)//60% chance
             {
-                damage = 1;
-
-                if (fireChance <= 60)//60% chance
-                {
-                    damage += 3;
-                }
-                if (critChance <= 10)//10% chance
-                {
-                    damage *= 2;
-                }
+                damage += 3;
             }
-            //total opportunity for a max of 8 damage if you get a crit and fire damage
+            if (critChance <= 10)//10% chance
+            {
+                damage *= 2;
+            }
+        }
+        //total opportunity for a max of 8 damage if you get a crit and fire damage
     }
 };
-class Berries 
+class Berries
 {
-    public:
-        int healing = 5;//healing would need to be accessed but quantity can be sorted out internally
-        int quantity = 3;//for setting the main berriesQuantity variable after a berry has been consumed
-        Berries(bool consumed, int quantity) 
+public:
+    int healing = 5;//healing would need to be accessed but quantity can be sorted out internally
+    int quantity = 3;//for setting the main berriesQuantity variable after a berry has been consumed
+    Berries(bool consumed, int quantity)
+    {
+        if (consumed && quantity > 0)
         {
-            if (consumed && quantity > 0)
-            {
-                quantity -= 1;//this would always have to be the same instance which gets used unless another punnet is found
-            }
-            else 
-            {
-                healing = quantity == 0 ? 0 : 5;//Only provides healing if there are berries to be healed with
-            }//Double checks that quantity is zero just in case false is accidentally input
-            this->quantity = quantity;//saves the quantity from the constructor back to the class variable
+            quantity -= 1;//this would always have to be the same instance which gets used unless another punnet is found
         }
-};
-class BlackSlime 
-{       
-    public:
-        int health = 20;//takes 2 or 4 sword hits
-        bool isAlive() 
+        else
         {
-            if (health > 0)
-            {
-                return true;
-            }
-            else
-            {
-                clr();
-                sleep(0.5);
-                cout << "The slime died!" << el;
-                sleep(3);
-                return false;
-            }
-        }//alive by default but dies on 0 health
-
-        int getDamage() 
-        {
-            static bool seeded = false;
-            if (!seeded) {
-                srand(time(0));
-                seeded = true;
-            }
-
-            float critChance = rand() % 100 + 1;
-            float hitChance = rand() % 100 + 1;
-
-            int damage = 0;//resets damage after prior alterations
-            if (hitChance <= 40)//40% chance
-            {
-                damage = 5;//can kill you in 4 consecutive hits
-
-                if (critChance <= 5)//10% chance (could kill you in 2 hits)
-                {
-                    damage *= 2;
-                }
-            }
-            return damage;//total opportunity for a max of 8 damage if you get a crit and fire damage
-        }
-        
-        void attackPlayer(Player& player)
-        {
-            if (isAlive())//if the slime is alive it can attack
-            {
-                sleep(8);
-                clr();
-                cout << "The slime attempts to attack you with it's wet tendrils!" << el;
-                cout << "You had " << health << " health but now have ";
-                health -= getDamage();//for the random damage to be recalculated I use a function which returns the damage
-                cout << health << " health!" << el;
-                sleep(8);
-            }
-        }
+            healing = quantity == 0 ? 0 : 5;//Only provides healing if there are berries to be healed with
+        }//Double checks that quantity is zero just in case false is accidentally input
+        this->quantity = quantity;//saves the quantity from the constructor back to the class variable
+    }
 };
 class Player
 {
-    public:
-        int health = 20;//this variable would be updated whenever the player instance is re-initialised
-        const int maxHealth = 20;
-        bool isAlive() 
+public:
+    int health = 20;//this variable would be updated whenever the player instance is re-initialised
+    const int maxHealth = 20;
+    bool isAlive()
+    {
+        if (health > 0)
         {
-            if (health > 0) 
-            {
-                return true;
-            }
-            else 
-            {
-                clr();
-                sleep(0.5);
-                cout << "You died!" << el;
-                sleep(3);
-                exit(0);//terminates the program
-                return false;//never gets run, just for clarity
-            }
-        }//alive by default but dies on 0 health
-        /*Player()
+            return true;
+        }
+        else
         {
-            if (health <= 0) 
-            {
-                alive = false;//directly assigning the class variable a value so I don't need to use this->alive = alive since it is implicit in this scenario
-            }
-            this->health = health;
-        }*/
+            clr();
+            sleep(0.5);
+            cout << "You died!" << el;
+            sleep(3);
+            exit(0);//terminates the program
+            return false;//never gets run, just for clarity
+        }
+    }//alive by default but dies on 0 health
+    /*Player()
+    {
+        if (health <= 0)
+        {
+            alive = false;//directly assigning the class variable a value so I don't need to use this->alive = alive since it is implicit in this scenario
+        }
+        this->health = health;
+    }*/
 };
+class BlackSlime
+{
+public:
+    int health = 20;//takes 2 or 4 sword hits
+    bool isAlive()
+    {
+        if (health > 0)
+        {
+            return true;
+        }
+        else
+        {
+            clr();
+            sleep(0.5);
+            cout << "The slime died!" << el;
+            sleep(3);
+            return false;
+        }
+    }//alive by default but dies on 0 health
+
+    int getDamage()
+    {
+        static bool seeded = false;
+        if (!seeded) {
+            srand(time(0));
+            seeded = true;
+        }
+
+        float critChance = rand() % 100 + 1;
+        float hitChance = rand() % 100 + 1;
+
+        int damage = 0;//resets damage after prior alterations
+        if (hitChance <= 40)//40% chance
+        {
+            damage = 5;//can kill you in 4 consecutive hits
+
+            if (critChance <= 5)//5% chance (could kill you in 2 hits)
+            {
+                damage *= 2;
+            }
+        }
+        return damage;//total opportunity for a max of 8 damage if you get a crit and fire damage
+    }
+
+    void attackPlayer(Player& player)
+    {
+        if (isAlive())//if the slime is alive it can attack
+        {
+            sleep(8);
+            clr();
+            cout << "The slime attempts to attack you with it's wet tendrils!" << el;
+            cout << "You had " << player.health << " health but now have ";
+            player.health -= getDamage();//for the random damage to be recalculated I use a function which returns the damage
+            cout << player.health << " health!" << el;
+            sleep(8);
+        }
+    }
+};
+
 int main()
 {
     string reply = "";
