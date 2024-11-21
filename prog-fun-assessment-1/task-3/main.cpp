@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
     validInput = false;
     while (!validInput) 
     {
-        cout << "Select a calculation to be performed on the number: \nNegation (1)\nAbsolute Value (2)\nSquaring (3)\nCubing (4)\nSquare Root (5)\nFlooring (7)\nRounding (8)\nCeiling (9)" << endl;
+        cout << "Select a calculation to be performed on the number: \nNegation (1)\nAbsolute Value (2)\nSquaring (3)\nCubing (4)\nSquare Root (5)\nFlooring (6)\nRounding (7)\nCeiling (8)" << endl;
         cout << "Please enter a number from 1-9" << endl;
         cin >> reply1;
         switch (reply1) 
@@ -76,6 +76,40 @@ int main(int argc, char* argv[])
             cout << "Negation: " << -number << endl;
             break;
         case '2':
+            validInput = true;
+            cout << "Absolute Value: " << abs(number) << endl;
+            break;
+        case '3':
+            validInput = true;
+            cout << "Squared: " << powf(number,2) << endl;
+            break;
+        case '4':
+            validInput = true;
+            cout << "Cubed: " << powf(number, 3) << endl;
+            break;
+        case '5':
+            validInput = true;
+            if (number<0)
+            {
+                float temp = number * -1;
+                temp = sqrtf(temp);
+                number = -temp;
+            }
+            else
+            {
+                number = sqrt(number);
+            }
+            cout << "Squared: " << number << endl;
+            break;
+        case '6':
+            validInput = true;
+            cout << "Absolute Value: " << abs(number) << endl;
+            break;
+        case '7':
+            validInput = true;
+            cout << "Negation: " << -number << endl;
+            break;
+        case '8':
             validInput = true;
             cout << "Absolute Value: " << abs(number) << endl;
             break;
