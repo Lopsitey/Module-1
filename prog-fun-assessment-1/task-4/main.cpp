@@ -1,5 +1,6 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
+#include <vector>
 #define clr() system("cls")
 using namespace std;
 int main(int argc, char* argv[])
@@ -7,6 +8,7 @@ int main(int argc, char* argv[])
     //Insert your code to complete challenge 4
     bool validInput = false;
     string reply = "";
+    const string hyphen = "-";
     int i = 0;
 
     while (true) 
@@ -43,10 +45,75 @@ int main(int argc, char* argv[])
             }
             else {
                 // Process the input
-                cout << "You entered: " << reply << endl;
+                vector<string> boxLineArr = {};
+                string boxLine = "";
+                for (int i = 0; i < reply.size(); ++i)
+                {
+                    boxLineArr.push_back("+="+hyphen+"="+hyphen+"=");
+                    if (i == (reply.size() - 2)) 
+                    {
+                        boxLineArr.push_back("+");
+                    }
+                    boxLine += boxLineArr[i];//saves the vector as a string for later output
+                }//+=−=−= +=−=−= +=−=−= +
+                cout << boxLine << endl;
+                cout << "|";
+                for (int i = 0; i < reply.size(); ++i) 
+                {
+                    cout << " " << reply[i] << " |";
+                }
+                cout << endl << boxLine << endl;
                 validInput = true;
             }
         }
     }
     return 0;
 }
+/*
+int main() {
+    string reply;
+    bool validInput = false;
+
+    while (!validInput) {
+        cout << "Input some text: ";
+        getline(cin, reply);
+
+        if (reply.empty()) {
+            cerr << "Error: empty input!" << endl;
+        } else {
+            validInput = true;
+
+            // Find the length of the longest word
+            int maxLength = 0;
+            for (char c : reply) {
+                if (c != ' ') {
+                    maxLength++;
+                } else {
+                    if (maxLength > 0) {
+                        maxLength = max(maxLength, 3); // Account for "+=" and "="
+                        maxLength = 0;
+                    }
+                }
+            }
+            maxLength = max(maxLength, 3); // Handle the last word
+
+            // Create the box lines
+            string boxLine = "";
+            for (int i = 0; i < maxLength + 2; ++i) {
+                boxLine += "+=";
+            }
+            boxLine += "+";
+
+            // Print the box and text
+            cout << boxLine << endl;
+            cout << "| ";
+            for (char c : reply) {
+                cout << c << " | ";
+            }
+            cout << endl << boxLine << endl;
+        }
+    }
+
+    return 0;
+}
+*/
