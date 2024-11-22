@@ -17,6 +17,7 @@ int main(int argc, char* argv[])
         if (i == 3)
         {
             i -= 3;
+            validInput = false;
             while (!validInput)
             {
                 cout << "Do you want to clear the console? (y/n)" << endl;
