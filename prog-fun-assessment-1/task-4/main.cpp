@@ -8,17 +8,17 @@ int main(int argc, char* argv[])
     //Insert your code to complete challenge 4
     bool validInput = false;
     string reply = "";
-    const string hyphen = "-";
+    const string hyphen = "-";//because the encoding is meesed up I have to use this variable
     int i = 0;
 
     while (true) 
     {
-        i += i = 3 ? -3 : 1;//resets i at 3
+        ++i;
         if (i == 3)
         {
+            i -= 3;
             while (!validInput)
             {
-
                 cout << "Do you want to clear the console? (y/n)" << endl;
                 cin >> reply;
                 if (reply != "y" && reply != "n")
@@ -43,26 +43,21 @@ int main(int argc, char* argv[])
                 cerr << "Error: empty input!" << endl;
                 validInput = false;
             }
-            else {
+            else 
+            {
                 // Process the input
-                vector<string> boxLineArr = {};
                 string boxLine = "";
+
                 for (int i = 0; i < reply.size(); ++i)
-                {
-                    boxLineArr.push_back("+="+hyphen+"="+hyphen+"=");
-                    if (i == (reply.size() - 2)) 
-                    {
-                        boxLineArr.push_back("+");
-                    }
-                    boxLine += boxLineArr[i];//saves the vector as a string for later output
-                }//+=−=−= +=−=−= +=−=−= +
-                cout << boxLine << endl;
-                cout << "|";
+                {   
+                    boxLine += "+=" + hyphen + "=" + hyphen + "=";//saves the vector as a string for later output
+                }
+                cout << boxLine << "+\n" << "|";
                 for (int i = 0; i < reply.size(); ++i) 
                 {
-                    cout << " " << reply[i] << " |";
+                    cout << "  " << reply[i] << "  |";
                 }
-                cout << endl << boxLine << endl;
+                cout << endl << boxLine << "+" << endl;
                 validInput = true;
             }
         }
