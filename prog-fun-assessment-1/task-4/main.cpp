@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 #include <vector>
 #define clr() system("cls")
@@ -30,10 +30,15 @@ int main(int argc, char* argv[])
                     clr();
                     validInput = true;
                 }
+                else if (reply == "n") 
+                {
+                    validInput = true;
+                }
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');//ignores the input required to reply to the "do you want to clear the console" question
             }
         }
         validInput = false;
-        while (!validInput)
+        while (!validInput)// only runs if your not clearing the console becuase otherwise you would have a blank output
         {    
             cout << "\nInput some text: ";
             getline(cin, reply);//essentially the same as cin >> reply;
@@ -64,51 +69,3 @@ int main(int argc, char* argv[])
     }
     return 0;
 }
-/*
-int main() {
-    string reply;
-    bool validInput = false;
-
-    while (!validInput) {
-        cout << "Input some text: ";
-        getline(cin, reply);
-
-        if (reply.empty()) {
-            cerr << "Error: empty input!" << endl;
-        } else {
-            validInput = true;
-
-            // Find the length of the longest word
-            int maxLength = 0;
-            for (char c : reply) {
-                if (c != ' ') {
-                    maxLength++;
-                } else {
-                    if (maxLength > 0) {
-                        maxLength = max(maxLength, 3); // Account for "+=" and "="
-                        maxLength = 0;
-                    }
-                }
-            }
-            maxLength = max(maxLength, 3); // Handle the last word
-
-            // Create the box lines
-            string boxLine = "";
-            for (int i = 0; i < maxLength + 2; ++i) {
-                boxLine += "+=";
-            }
-            boxLine += "+";
-
-            // Print the box and text
-            cout << boxLine << endl;
-            cout << "| ";
-            for (char c : reply) {
-                cout << c << " | ";
-            }
-            cout << endl << boxLine << endl;
-        }
-    }
-
-    return 0;
-}
-*/
