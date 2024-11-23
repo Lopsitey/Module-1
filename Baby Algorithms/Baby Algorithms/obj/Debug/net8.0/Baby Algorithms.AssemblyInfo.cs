@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Baby Algorithms")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+69bf170375d4da81162575a9b47cac8db032a195")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dd3cbb062fbd3f20795483fbf26ae8cc89ab342c")]
 [assembly: System.Reflection.AssemblyProductAttribute("Baby Algorithms")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Baby Algorithms")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

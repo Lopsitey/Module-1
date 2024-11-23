@@ -1,5 +1,4 @@
 #include <iostream>
-#include <algorithm>
 #include <string>
 using namespace std;
 int main(int argc, char* argv[])
@@ -10,20 +9,32 @@ int main(int argc, char* argv[])
     getline(cin, reply);
     string upperCase = reply;
     string lowerCase = reply;
-    string sentenceCase = reply;
-    string alternateCase = reply;
+    string sentenceCase = "";
+    string alternateCase = "";
     string noWhiteSpace = "";
-    bool hit = false;
+    int spacesAmount = 0;
 
     for (int i = 0; i < reply.length(); i++)
     {
-        if (reply[i] >= 'a' && reply[i] <= 'z')//ensures the value is in the alphabet
+        if (reply[i] >= 'a' && reply[i] <= 'z')//ensures the value is in the alphabet and lowercase
         {
             upperCase[i] = toupper(reply[i]);//deducts 32 from the ascii value which converts it into the uppercase section
+        }
+        else if (reply[i] >= 'A' && reply[i] <= 'Z') 
+        {
             lowerCase[i] = tolower(reply[i]);
         }
+        if (reply[i] != ' ')
+        {
+            noWhiteSpace += reply[i];//creating the no whitespace variable
+        }
+    }
+
+    for (int i = 0; i < reply.length(); i++) 
+    {
         if (i == 0)
         {
+            sentenceCase = lowerCase;//sets it to all lowercase initially
             sentenceCase[i] = toupper(reply[i]);
         }
         else if (reply[i] == '!' || reply[i] == '?' || reply[i] == '.')
@@ -37,52 +48,30 @@ int main(int argc, char* argv[])
             }
             catch (exception ex) {}//just in case the sentence ends with a space for some reason
         }
-        if (reply[i] != ' ') 
-        {
-            noWhiteSpace += reply[i];//trying something new here
-        }
     }
 
-    int k = -1;//used to accurately access the noWhiteSpace variable whilst accounting for spaces
-    for (int i = 0; i < reply.length(); i++)
+    int k = -1;//so it's zero on the first iteration - for keeping track of the pattern
+    for (int i = 0; i < noWhiteSpace.length(); i++)//used to accurately access the noWhiteSpace variable whilst accounting for spaces
     {
         ++k;
-        if (reply[i] != ' ')//creating the no whitespace variable
+        if (reply[i + spacesAmount] == ' ')
         {
-            if (i % 2 == 0)
-            {
-                noWhiteSpace[k] = tolower(reply[k]);//makes every even character uppercase
-            }
-            else
-            {
-                noWhiteSpace[k] = toupper(reply[k]);
-            }
+            alternateCase += ' ';
+            ++spacesAmount;//puts the arrays on the same page by fixing the space discrepancy between the reply string and the noWhiteSpace string
         }
-        else
-        {
-            k -= 1;//takes 1 off the counter if a space is found
-        }
-        if (i == reply.length() - 1 && !hit)
-        {
-            hit = true;
-            i = k;
-        }
-    }
 
-    for (int i = 0; i < noWhiteSpace.length(); i++)
-    {
-        ++k;
-        if (noWhiteSpace[i] >= 'a' && noWhiteSpace[i] <= 'z')
+        if (noWhiteSpace[i] == '?' || noWhiteSpace[i] == '!' || noWhiteSpace[i] == '.' || noWhiteSpace[i] == ',')
         {
-            if (reply[i] == ' ')
-            {
-                alternateCase[i] = ' ';
-                k -= 1;
-            }
-            else
-            {
-                alternateCase[i] = noWhiteSpace[k];
-            }
+            alternateCase += noWhiteSpace[i];
+            --k;//maintains the pattern by skipping any punctuation
+        }
+        else if (k % 2 == 0)
+        {
+            alternateCase += tolower(noWhiteSpace[i]);//makes every even character uppercase
+        }//reply: "the cat sat on the mat"
+        else//nowWhiteSpace: "thecatsatonthemat"
+        {
+            alternateCase += toupper(noWhiteSpace[i]);
         }
     }
 
