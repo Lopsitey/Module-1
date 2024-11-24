@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <limits>
+#define clr() system("cls")
 using namespace std;
 uint16_t convertStringToUint16(const string& str)
 {//converts the string to a usable integer
@@ -17,6 +19,14 @@ uint16_t convertStringToUint16(const string& str)
         throw ex;//throws an error that can be caught and dealt with - 1 based input to 0 based input
     }
 }
+
+void initializeInventory(vector<string>& inven, int& size) 
+{
+    for (int i = 0; i < size; ++i)
+    {
+        inven.push_back("Empty");
+    }
+}
 int main(int argc, char* argv[])
 {
     //Insert your code to complete challenge 8
@@ -24,23 +34,57 @@ int main(int argc, char* argv[])
 
     while (reply != "exit")//outer loop for a restart
     {
+        clr();//for when it gets reset, so does everything in the console - this means it stays clean and tidy
         reply = "";
 
         vector<string> inventory = {};
-        vector<string> items = {"Empty","Shield","Potion","Gloves"};
+        vector<string> items = { "Empty","Shield","Potion","Gloves" };
 
-        cout << "What size inventory do you want?" << endl;
-        cin >> reply;
-        for (int i = 0; i < convertStringToUint16(reply); ++i)
+        int inventorySize = 0;
+
+        bool validInput = false;
+        while (!validInput)
         {
-            inventory.push_back("");
+            cout << "What size inventory do you want?" << endl;
+            cin >> reply;
+            inventorySize = convertStringToUint16(reply);
+            if (inventorySize < 1 || inventorySize > 16)
+            {
+                cerr << "Error: Inventory size must be between 1 and 16 slots!" << endl;
+                validInput = false;
+                continue;
+            }
+            else
+            {
+                validInput = true;
+            }
         }
+
+        initializeInventory(inventory, inventorySize);
+
         cout << "Inventory initialized to " << reply << " slots." << endl;
         cout << "Type \"help\" for a list of all commands." << endl;
         while (reply != "exit")
         {//iterates until the user decides not too
-            reply = "";
-            getline(cin, reply);
+            validInput = false;
+            while (!validInput)
+            {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');//ignores any prior input in the buffer e.g. when the user was asked to input a size for the inventory
+                reply = "";
+                getline(cin, reply);
+                if (reply.substr(0, 2) != "- ")
+                {
+                    cerr << "Error: Command did not start with a \"- \" retry!" << endl;
+                    validInput = false;
+                    continue;
+                }
+                else
+                {
+                    validInput = true;
+                    reply.erase(0, 2);//erases the "- " part of the command
+                }
+            }
             if (reply == "help")
             {
                 cout << "view <index>: Prints details of the item at the specified index.\nshow_all: Shows all inventory slots and their details.\nset <index> <itemid>: Sets the slot at the specified index to the given item.\nsearch_item <str>";
@@ -57,15 +101,14 @@ int main(int argc, char* argv[])
             }
             if (reply.substr(0, 8) == "show_all")
             {
-                reply = "";
+                int i = -1;//so it's zero-based
                 for (string element : inventory)
                 {
-                    reply += element;
+                    cout << "Slot " << ++i << ": " << element << endl;//changes the value of i in-line
                 }
-                cout << "Entire inventory: " << reply << endl;
 
             }
-            if (reply.substr(0, 3)=="set")
+            if (reply.substr(0, 3) == "set")
             {
                 reply.erase(reply.find(" "), 1);//erases the first space so the second can be found
                 int inventorySlot = convertStringToUint16(reply.substr(3, reply.find(" ")));
@@ -74,14 +117,14 @@ int main(int argc, char* argv[])
                 cout << "Inventory slot " << inventorySlot << " details:" << endl;
                 cout << "Name: " << inventory[inventorySlot] << endl;
             }
-            if (reply == "items") 
+            if (reply == "items")
             {
-                for (int i = 0; i < items.size(); ++i) 
+                for (int i = 0; i < items.size(); ++i)
                 {
                     cout << i << ": " << items[i] << endl;
                 }
             }
-            if (reply.substr(0,11) == "search_item")
+            if (reply.substr(0, 11) == "search_item")
             {
                 cout << "Search results:" << endl;
 
@@ -102,12 +145,14 @@ int main(int argc, char* argv[])
                     }
                 }
             }
-            if (reply == "clear") 
+            if (reply == "clear")
             {
                 inventory.clear();
                 cout << "Cleared inventory" << endl;
+                initializeInventory(inventory, inventorySize);//re-initializes it after clearing
             }
         }
     }
+    cout << "Exiting." << endl;
     return 0;
 }
