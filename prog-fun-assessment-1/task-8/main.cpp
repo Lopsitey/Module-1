@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
         reply = "";
 
         vector<string> inventory = {};
+        vector<string> items = {"Empty","Shield","Potion","Gloves"};
 
         cout << "What size inventory do you want?" << endl;
         cin >> reply;
@@ -63,6 +64,48 @@ int main(int argc, char* argv[])
                 }
                 cout << "Entire inventory: " << reply << endl;
 
+            }
+            if (reply.substr(0, 3)=="set")
+            {
+                reply.erase(reply.find(" "), 1);//erases the first space so the second can be found
+                int inventorySlot = convertStringToUint16(reply.substr(3, reply.find(" ")));
+                int itemID = convertStringToUint16(reply.substr(reply.find(" "), reply.length()));//converts the last section of the string to an integer - from the space to the end of the string
+                inventory[inventorySlot] = items[itemID];
+                cout << "Inventory slot " << inventorySlot << " details:" << endl;
+                cout << "Name: " << inventory[inventorySlot] << endl;
+            }
+            if (reply == "items") 
+            {
+                for (int i = 0; i < items.size(); ++i) 
+                {
+                    cout << i << ": " << items[i] << endl;
+                }
+            }
+            if (reply.substr(0,11) == "search_item")
+            {
+                cout << "Search results:" << endl;
+
+                string itemToFind = reply.substr(12, reply.length());
+                string lowercase = "";
+                string uppercase = "";
+
+                for (int i = 0; i < itemToFind.length(); ++i)//creates the uppercase and lowercase versions of the input one char at a time
+                {
+                    uppercase += toupper(itemToFind[i]);
+                    lowercase += tolower(itemToFind[i]);
+                }
+                for (int i = 0; i < items.size(); ++i)
+                {
+                    if (items[i].find(uppercase) != string::npos || items[i].find(lowercase) != string::npos)//if an item is found when comparing both cases
+                    {
+                        cout << "Item index " << i << ": " << items[i] << endl;
+                    }
+                }
+            }
+            if (reply == "clear") 
+            {
+                inventory.clear();
+                cout << "Cleared inventory" << endl;
             }
         }
     }
