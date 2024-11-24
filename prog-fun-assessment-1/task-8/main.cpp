@@ -20,14 +20,14 @@ uint16_t convertStringToUint16(const string& str)
     }
 }
 
-void initializeInventory(vector<string>& inven, int& size) 
+void initializeInventory(vector<string>& inven, uint16_t& size) 
 {
     for (int i = 0; i < size; ++i)
     {
         inven.push_back("Empty");
     }
 }
-int main(int argc, char* argv[])
+uint16_t main(uint16_t argc, char* argv[])
 {
     //Insert your code to complete challenge 8
     string reply = "";
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
         vector<string> inventory = {};
         vector<string> items = { "Empty","Shield","Potion","Gloves" };
 
-        int inventorySize = 0;
+        uint16_t inventorySize = 0;
 
         bool validInput = false;
         while (!validInput)
@@ -69,10 +69,7 @@ int main(int argc, char* argv[])
             validInput = false;
             while (!validInput)
             {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');//ignores any prior input in the buffer e.g. when the user was asked to input a size for the inventory
-                reply = "";
-                getline(cin, reply);
+                getline(cin, reply);//needs to loop twice before it can read input?
                 if (reply.substr(0, 2) != "- ")
                 {
                     cerr << "Error: Command did not start with a \"- \" retry!" << endl;
@@ -96,7 +93,7 @@ int main(int argc, char* argv[])
             }
             if (reply.substr(0, 4) == "view")
             {
-                int inventorySlot = convertStringToUint16(reply.substr(5, reply.length()));//gets the second half of the command
+                uint16_t inventorySlot = convertStringToUint16(reply.substr(5, reply.length()));//gets the second half of the command
                 cout << "Inventory slot: " << inventory[inventorySlot] << endl;
             }
             if (reply.substr(0, 8) == "show_all")
@@ -111,8 +108,8 @@ int main(int argc, char* argv[])
             if (reply.substr(0, 3) == "set")
             {
                 reply.erase(reply.find(" "), 1);//erases the first space so the second can be found
-                int inventorySlot = convertStringToUint16(reply.substr(3, reply.find(" ")));
-                int itemID = convertStringToUint16(reply.substr(reply.find(" "), reply.length()));//converts the last section of the string to an integer - from the space to the end of the string
+                uint16_t inventorySlot = convertStringToUint16(reply.substr(3, reply.find(" ")));
+                uint16_t itemID = convertStringToUint16(reply.substr(reply.find(" "), reply.length()));//converts the last section of the string to an integer - from the space to the end of the string
                 inventory[inventorySlot] = items[itemID];
                 cout << "Inventory slot " << inventorySlot << " details:" << endl;
                 cout << "Name: " << inventory[inventorySlot] << endl;
