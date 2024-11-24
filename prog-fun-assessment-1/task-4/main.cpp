@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
     //Insert your code to complete challenge 4
     bool validInput = false;
     string reply = "";
-    const string hyphen = "-";//because the encoding is meesed up I have to use this variable
+    const string hyphen = "-";//because the encoding is messed up I have to use this variable
     int i = 0;
 
     while (true) 
