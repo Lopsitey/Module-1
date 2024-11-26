@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 
     while (true) 
     {
-        ++i;
+        ++i;//iterates in on the same line
         if (i == 3)
         {
             i -= 3;
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
             }
         }
         validInput = false;
-        while (!validInput)// only runs if your not clearing the console becuase otherwise you would have a blank output
+        while (!validInput)//only runs if your not clearing the console because otherwise you would have a blank output
         {    
             cout << "\nInput some text: ";
             getline(cin, reply);//essentially the same as cin >> reply;
@@ -51,19 +51,18 @@ int main(int argc, char* argv[])
             }
             else 
             {
-                // Process the input
                 string boxLine = "";
 
                 for (int i = 0; i < reply.size(); ++i)
                 {   
                     boxLine += "+=" + hyphen + "=" + hyphen + "=";//saves the vector as a string for later output
                 }
-                cout << boxLine << "+\n" << "|";
+                cout << boxLine << "+\n" << "|";//top line of the box
                 for (int i = 0; i < reply.size(); ++i) 
                 {
-                    cout << "  " << reply[i] << "  |";
+                    cout << "  " << reply[i] << "  |";//middle row
                 }
-                cout << endl << boxLine << "+" << endl;
+                cout << endl << boxLine << "+" << endl;//bottom line of the box
                 validInput = true;
             }
         }

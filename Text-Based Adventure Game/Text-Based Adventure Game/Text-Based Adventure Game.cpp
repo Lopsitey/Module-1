@@ -442,7 +442,6 @@ int main()
     }
     clr();
     cout << "There seems to be a shape in the distance." << el;
-
 }
 /*
     For checking if the input is in the inventory and valid:

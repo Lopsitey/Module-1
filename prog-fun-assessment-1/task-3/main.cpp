@@ -10,8 +10,9 @@ public:
     explicit InvalidInputException(const string& message) : runtime_error(message) {}//explicit is used so strings aren't implicitly converted to the class type
 };
 
-float parseString(const string& str) {//can only be an int or float
-    stringstream ss(str);
+float parseString(const string& str) 
+{
+    stringstream ss(str);//converts the string to a float immediately
     float type1;
     bool isNegative = false;
 
@@ -56,15 +57,15 @@ int main(int argc, char* argv[])
         }
         catch (exception error)//for any other errors
         {
-            cerr << "Error: " << error.what() << endl;
+            cerr << "Error: " << error.what() << endl;//.what gets the error from the class and outputs it as a string
             validInput = false;
-            continue;
+            continue;//goes back to the start of the loop and skips the line below
         }
         validInput = true;
     }
 
     validInput = false;
-    while (!validInput) 
+    while (!validInput)//while the input is invalid
     {
         cout << "Select a calculation to be performed on the number: \nNegation (1)\nAbsolute Value (2)\nSquaring (3)\nCubing (4)\nSquare Root (5)\nFlooring (6)\nRounding (7)\nCeiling (8)" << endl;
         cout << "Please enter a number from 1-9" << endl;
@@ -73,7 +74,7 @@ int main(int argc, char* argv[])
         {
         case '1':
             validInput = true;
-            cout << "Negation: " << -number << endl;
+            cout << "Negation: " << -number << endl;//returns the opposite value
             break;
         case '2':
             validInput = true;
@@ -99,19 +100,19 @@ int main(int argc, char* argv[])
             {
                 number = sqrt(number);
             }
-            cout << "Squared: " << number << endl;
+            cout << "Square root: " << number << endl;
             break;
         case '6':
             validInput = true;
-            cout << "Absolute Value: " << abs(number) << endl;
+            cout << "Floored: " << floorf(number) << endl;
             break;
         case '7':
             validInput = true;
-            cout << "Negation: " << -number << endl;
+            cout << "Rounded: " << roundf(number) << endl;
             break;
         case '8':
             validInput = true;
-            cout << "Absolute Value: " << abs(number) << endl;
+            cout << "Ceiling: " << ceilf(number) << endl;//always returns the positive value f is for float input
             break;
 
         default:

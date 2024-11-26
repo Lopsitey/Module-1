@@ -4,15 +4,16 @@
 #include <sstream>
 using namespace std;
 
-class InvalidInputException : public runtime_error 
+class InvalidInputException : public runtime_error //inherits from the main error class
 {
 public:
     explicit InvalidInputException(const string& message) : runtime_error(message) {}//explicit is used on the constuctor because string may get implicitly converted to TypeMismatchException
 };
 
-uint16_t convertStringToUint16(const string& str) {
-    stringstream ss(str);
-    uint16_t value;
+uint16_t convertStringToUint16(const string& str) 
+{
+    stringstream ss(str);//uses a string stream because it can be converted uniquely
+    uint16_t value;//uint16_t because we don't need a massive uint64_t and we don't want it to be negative either
 
     if (ss >> value) {//if the input string is successfully converted into a uint16_t
         return value;
@@ -32,7 +33,7 @@ int main(int argc, char* argv[])
     uint16_t level = 0;
     string temp = "";
 
-    bool validInput = true;
+    bool validInput = false;
 
     cout << "Input your first name: ";
     cin >> realName;
@@ -40,7 +41,7 @@ int main(int argc, char* argv[])
     cin >> userName;
     cout << endl << "Input your clan tag: ";
     cin >> clanTag;
-    while (validInput==true) 
+    while (!validInput)//while the input is invalid
     {
         try 
         {
@@ -50,16 +51,16 @@ int main(int argc, char* argv[])
         }
         catch (const InvalidInputException& e) {
             cerr << "Error: " << e.what() << endl;//.what retrieves the error from the class
-            validInput = true;
+            validInput = false;
             continue;
         }
         catch (exception error)//for any other errors
         {
-            cerr << "Error: " << error.what() << endl;
-            validInput = true;
-            continue;
+            cerr << "Error: " << error.what() << endl;//errror.what gets the error from the class as a string to output
+            validInput = false;
+            continue;//goes back to the next loop iteration and misses the validInput = true line, which would only run if the input was accurate
         }
-        validInput = false;
+        validInput = true;
     }
     level = expPoints / 100;
 

@@ -70,7 +70,7 @@ uint16_t main(uint16_t argc, char* argv[])
             while (!validInput)
             {
                 getline(cin, reply);//needs to loop twice before it can read input?
-                if (reply.substr(0, 2) != "- ")
+                if (reply.substr(0, 2) != "- " && reply.length() > 2)//is a legitimate reply and has the correct syntax
                 {
                     cerr << "Error: Command did not start with a \"- \" retry!" << endl;
                     validInput = false;
