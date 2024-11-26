@@ -1,6 +1,12 @@
 #include <iostream>
 #include <string>
-using namespace std;
+
+using std::endl;
+using std::cin;
+using std::cout;
+using std::exception;
+using std::string;
+
 int main(int argc, char* argv[])
 {
     //Insert your code to complete challenge 5
@@ -74,7 +80,7 @@ int main(int argc, char* argv[])
             alternateCase += toupper(noWhiteSpace[i]);//every odd character is lowercase
         }
     }
-
+    //Ouput: 
     cout << "Uppercase        => " << upperCase << endl;
     cout << "Lowercase        => " << lowerCase << endl;
     cout << "Sentence casing  => " << sentenceCase << endl;

@@ -2,7 +2,15 @@
 #include <type_traits>
 #include <stdexcept>
 #include <sstream>
-using namespace std;
+
+using std::endl;
+using std::cin;
+using std::cout;
+using std::cerr;
+using std::exception;
+using std::string;
+using std::stringstream;
+using std::runtime_error;
 
 class InvalidInputException : public runtime_error //inherits from the main error class
 {

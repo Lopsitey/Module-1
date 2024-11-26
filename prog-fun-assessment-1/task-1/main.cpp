@@ -1,12 +1,14 @@
 ﻿#include <iostream>
-using namespace std;
+
+//no namespaces or using statements are needed because the code is so simple
+
 int main(int argc, char* argv[])
 {
     //Insert your code to complete challenge 1
-    string ASCIIart[14] = {"                    |                  ","                   /|\\                 ","                  / | \\ a boat         ","                 /  |  \\               ","               / __ | __ \\             ","              /     |     \\            ","             / _____|_____ \\           ","       |____\\       |       /____|     ","         \\_ _ _____________ _ _/       ","          \\_ __ _ _ _ _ _ __ _/        ","   /\\  /\\  /\\  /\\  / \\  /\\  /\\  /\\  /\\ ","  /  \\/  \\/  \\/  \\/   \\/  \\/  \\/  \\/  \\"};
-    for (int i = 0; i < sizeof(ASCIIart)/sizeof(ASCIIart[0]); ++i)//iterates through the array using its size
+    std::string asciiArt[14] = {"                    |                  ","                   /|\\                 ","                  / | \\ a boat         ","                 /  |  \\               ","               / -- | -- \\             ","              /     |     \\            ","             / -----|----- \\           ","       |----\\       |       /----|     ","         \\- - ------------- - -/       ","          \\- -- - - - - - -- -/        ","   /\\  /\\  /\\  /\\  / \\  /\\  /\\  /\\  /\\ ","  /  \\/  \\/  \\/  \\/   \\/  \\/  \\/  \\/  \\"};
+    for (std::string& line : asciiArt)//iterates through the array using a foreach loop
     {
-        cout << ASCIIart[i] << endl;//outputted line-by-line
+        std::cout << line << std::endl;//outputted line-by-line by accessing the array elements via reference
     }
     /*
                     |

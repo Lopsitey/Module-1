@@ -1,8 +1,15 @@
 #include <iostream>
 #include <string>
-#include <vector>
 #define clr() system("cls")
-using namespace std;
+
+using std::endl;
+using std::cin;
+using std::cout;
+using std::cerr;
+using std::string;
+using std::streamsize;
+using std::numeric_limits;
+
 int main(int argc, char* argv[])
 {
     //Insert your code to complete challenge 4
@@ -13,7 +20,7 @@ int main(int argc, char* argv[])
 
     while (true) 
     {
-        ++i;//iterates in on the same line
+        ++i;//iterates on the same line
         if (i == 3)
         {
             i -= 3;
@@ -22,7 +29,7 @@ int main(int argc, char* argv[])
             {
                 cout << "Do you want to clear the console? (y/n)" << endl;
                 cin >> reply;
-                if (reply != "y" && reply != "n")
+                if (reply != "y" && reply != "n")//ensures that the user is always responding correctly - if not then the loop will iterate and they will be requested to respond again
                 {
                     validInput = false;
                 }

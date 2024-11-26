@@ -1,7 +1,16 @@
 #include "main.h"
 #include <iostream>
 #include <sstream>
-using namespace std;
+
+using std::endl;
+using std::cin;
+using std::cout;
+using std::cerr;
+using std::exception;
+using std::string;
+using std::stringstream;
+using std::vector;
+
 uint16_t convertStringToUint16(const string& str) 
 {//converts the string to a usable integer
     stringstream ss(str);
@@ -32,14 +41,14 @@ int main(int argc, char* argv[])
     //cout << "Here is a random number between 1 and 10: " << random(1, 10) << endl;
     //cout << "And here is one between -3 and -5: " << random(-3, -5) << endl;
 
-    int numberToGuess = random(0, 100);
+    int numberToGuess = random(0, 100);//generates a random number using the function in the .h file
     string guess = "";
     uint16_t difference = 0;
     int guesses = 0;
     bool won = false;
     bool validInput = false;
 
-    cout << "Psst! The correct answer is: " << numberToGuess << endl << endl;
+    cout << "Psst! The correct answer is: " << numberToGuess << endl << endl;//for developers
     while (!won) 
     {
         validInput = false;
@@ -50,8 +59,8 @@ int main(int argc, char* argv[])
                 cout << "What is your guess? (0-100)" << endl;
                 cin >> guess;
                 difference = abs(convertStringToUint16(guess) - numberToGuess);//abs() ensures the difference is always positive
-            }
-            catch (exception error)//if an excpetion is thrown, which my function will if anything is amiss
+            }//an error will be thrown if the guess is invalid therefore this needs to be in a try catch statemnets
+            catch (exception error)//if an exception is thrown, which my function will if anything is amiss
             {
                 cerr << "Invalid input retry!" << endl;
                 validInput = false;
@@ -64,7 +73,7 @@ int main(int argc, char* argv[])
         {
             cout << "freezing" << endl;
         }
-        else if (difference >= 35 && difference < 50)
+        else if (difference >= 35 && difference < 50)//checks if the guess is within a certain range
         {
             cout << "colder" << endl;
         }
@@ -95,7 +104,7 @@ int main(int argc, char* argv[])
         else if (difference == 0)
         {
             cout << "the guess is correct" << endl;
-            cout << "It took you: " << guesses << " guesses!" << endl;
+            cout << "It took you: " << guesses << " guesses!" << endl;//if the guess difference is zero then it is correct and the loop ends
             won = true;
         }
     }
