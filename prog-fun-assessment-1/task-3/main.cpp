@@ -21,7 +21,7 @@ public:
 float parseString(const string& str) 
 {
     stringstream ss(str);//converts the string to a float immediately
-    float type1;
+    float flt;
     bool isNegative = false;
 
     // Check for a leading negative sign
@@ -31,9 +31,9 @@ float parseString(const string& str)
         ss.ignore(1); // Skip the negative sign
     }
 
-    if (ss >> type1) 
+    if (ss >> flt) 
     {//if the input string is successfully converted into an int
-        return isNegative ? -type1 : type1;
+        return isNegative ? -flt : flt;
     }
     else 
     {

@@ -57,7 +57,8 @@ int main(int argc, char* argv[])
             cin >> temp;
             expPoints = convertStringToUint16(temp);//converts the stream (string) that was read to a uint and checks if it's valid
         }
-        catch (const InvalidInputException& e) {
+        catch (const InvalidInputException& e) 
+        {//for catching this error specifically
             cerr << "Error: " << e.what() << endl;//.what retrieves the error from the class
             validInput = false;
             continue;

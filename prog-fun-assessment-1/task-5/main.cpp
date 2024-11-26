@@ -13,6 +13,7 @@ int main(int argc, char* argv[])
     string reply = "";
     cout << "Please input a sentence or something random: ";
     getline(cin, reply);//gets the most recent line of input so spaces can be saved
+    
     string upperCase = reply;
     string lowerCase = reply;
     string sentenceCase = "";

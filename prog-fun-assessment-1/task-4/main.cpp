@@ -15,12 +15,10 @@ int main(int argc, char* argv[])
     //Insert your code to complete challenge 4
     bool validInput = false;
     string reply = "";
-    const string hyphen = "-";//because the encoding is messed up I have to use this variable
     int i = 0;
 
     while (true) 
     {
-        ++i;//iterates on the same line
         if (i == 3)
         {
             i -= 3;
@@ -45,6 +43,7 @@ int main(int argc, char* argv[])
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');//ignores the input required to reply to the "do you want to clear the console" question
             }
         }
+        ++i;//iterates on the same line
         validInput = false;
         while (!validInput)//only runs if your not clearing the console because otherwise you would have a blank output
         {    
@@ -62,7 +61,7 @@ int main(int argc, char* argv[])
 
                 for (int i = 0; i < reply.size(); ++i)
                 {   
-                    boxLine += "+=" + hyphen + "=" + hyphen + "=";//saves the vector as a string for later output
+                    boxLine += "+=-=-=";//saves the vector as a string for later output
                 }
                 cout << boxLine << "+\n" << "|";//top line of the box
                 for (int i = 0; i < reply.size(); ++i) 

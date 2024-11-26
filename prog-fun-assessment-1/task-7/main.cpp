@@ -195,8 +195,8 @@ int main(int argc, char* argv[])
                 cout << "Player 3 " << "(" << player3Name << ")," << " Role: " << player3Item.characterRole << ", Weapon: " << player3Item.name << ", Damage: " << player3Item.damage << endl;
 
                 cout << "\nWelcome to the land of oo..." << endl;//the game starting - the intro
-                //exit(0); - happens anyway
+                //exit(0); - happens anywayS
             }
         }
-    return 0;
+        return 0;
 }
