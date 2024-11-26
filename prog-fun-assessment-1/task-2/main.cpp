@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
         }
         catch (exception error)//for any other errors
         {
-            cerr << "Error: " << error.what() << endl;//errror.what gets the error from the class as a string to output
+            cerr << "Error: " << error.what() << endl;//error.what gets the error from the class as a string to output
             validInput = false;
             continue;//goes back to the next loop iteration and misses the validInput = true line, which would only run if the input was accurate
         }
